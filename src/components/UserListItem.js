@@ -1,12 +1,26 @@
 
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Button, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+export const ListItemOne = ({ data }) => {
+
+    let { name, email } = data;
+    return <View style={{ marginLeft: 10, marginTop: 5 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{name}</Text>
+        <Text style={{ fontSize: 14, }}>{email}</Text>
+    </View>
+}
 
 const UserListItem = ({ data }) => {
 
     let { name, email } = data;
-
+    const navigation = useNavigation()
     // https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010
-    return <View style={{ backgroundColor: '#fff', flex: 1,padding:10,marginBottom:7,borderRadius:10 }}>
+    return <TouchableOpacity
+    onPress={()=>{
+        navigation.navigate('Details',{user:data})
+    }}
+    style={{ backgroundColor: '#fff', flex: 1, padding: 10, marginBottom: 7, borderRadius: 10 }}>
 
         <View style={{ flexDirection: 'row' }}>
 
@@ -20,7 +34,7 @@ const UserListItem = ({ data }) => {
             </View>
         </View>
 
-    </View>
+    </TouchableOpacity>
 
 }
 
