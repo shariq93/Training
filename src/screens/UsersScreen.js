@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { Component, useEffect, useState } from 'react';
 import { Button, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import UserListItem from '../components/UserListItem';
+import { TextInput } from 'react-native';
+import MyTextFiled from '../components/MyTextFiled';
 
 
 
@@ -20,6 +22,21 @@ export default function App() {
     { name: 'Jessica Martinez', email: 'jessicamartinez@example.com' }
   ]
 
+  const [query, setQuery] = useState("")
+  useEffect(() => {
+
+
+    const filter = (item) => {
+
+      if (item.name.includes(query)) { return true }
+      else return false
+    }
+    const fList = userList.filter(filter)
+    console.log(fList);
+  }
+
+    , [query])
+
   return (
     <View style={{
       justifyContent: 'center',
@@ -28,13 +45,20 @@ export default function App() {
       paddingTop: 45,
     }}>
       <View style={{ paddingHorizontal: 20 }}>
+
+        <MyTextFiled
+          onChange={(text) => {
+            setQuery(text)
+          }}
+
+        />
         <FlatList
           showsVerticalScrollIndicator={false}
           data={userList}
 
           renderItem={(item) => {
-            return <UserListItem data ={item.item}/>
-          
+            return <UserListItem data={item.item} />
+
           }}
         />
       </View>
