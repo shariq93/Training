@@ -32,7 +32,7 @@ export default function App() {
       const filter = (item) => item.name.includes(query)
       const fList = userList.filter(filter)
       setUserList(fList)
-    }else{
+    } else {
       setUserList(userListCopy)
     }
   }
@@ -46,7 +46,7 @@ export default function App() {
       paddingTop: 45,
     }}>
       <View style={{ paddingHorizontal: 20 }}>
-<UserField/>
+        <UserField />
         <MyTextFiled
           onChange={(text) => {
             setQuery(text)
@@ -58,7 +58,13 @@ export default function App() {
           data={userList}
 
           renderItem={(item) => {
-            return <UserListItem data={item.item} />
+            return <UserListItem
+            onDelete={(item)=>{
+              let temp = userList.filter(it => it.name!=item.name )
+              setUserList(temp)
+              setUserListCopy(temp)
+            }}
+            data={item.item} />
 
           }}
         />
