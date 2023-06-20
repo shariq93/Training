@@ -1,11 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { Component, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, FlatList, Image, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import UserListItem from '../components/UserListItem';
-import { TextInput } from 'react-native';
-import MyTextFiled from '../components/MyTextFiled';
-import UserField from '../components/UserField';
-import ProductItem from '../components/ProductItem';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
+import { Button , Text as PText, Snackbar, TextInput } from 'react-native-paper';
 
 
 
@@ -14,39 +9,52 @@ export default function App() {
 
 
 
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    getProducts()
-  }, [])
-  const getProducts = async () => {
-   try {
-    setLoading(true)
-    const response = await fetch('https://dummyjson.com/products')
-    const data = await response.json()
-    setProducts(data.products)
-    setLoading(false)
-   } catch (error) {
-    alert(error)
-   }
-  
-  }
+  const [username, setUserName] = useState('')
+  const [passwrod, setPassword] = useState('')
+  const [visible, setVisible] = useState(false)
   return (
     <View style={{
       flex: 1,
       backgroundColor: '#ecf0f1',
 
     }}>
-      {loading && <ActivityIndicator color={'#333'} />}
-      <FlatList
-        numColumns={2}
-        data={products}
-        renderItem={({ item }) => {
-          console.log(item);
-          return <ProductItem data={item} />
-        }}
+      <Text style={{ fontSize: 18 }}> This is a texting sentense </Text>
+      <PText style={{ fontSize: 18 }}> This is a texting sentense </PText>
 
+      <Button mode='outlined'
+        style={{ width: 150 }}
+        onPress={() => {
+          alert('hello')
+        }}
+      >Paper Press Me</Button>
+
+
+      <TextInput
+        label="Email"
+        value={username}
+        onChangeText={text => setUserName(text)}
       />
+      <TextInput
+        label="Password"
+        value={passwrod}
+        mode='outlined'
+        onChangeText={text => setPassword(text)}
+      />
+
+      <Button onPress={()=>{
+          setVisible(!visible)
+      }}>{visible ? 'Hide' : 'Show'}</Button>
+      <Snackbar
+      
+        visible={visible}
+        onDismiss={()=>{
+        
+          setVisible(false)
+        }}
+        duration={2*1000}
+       >
+       Network request failed!
+      </Snackbar>
     </View>
   );
 }
