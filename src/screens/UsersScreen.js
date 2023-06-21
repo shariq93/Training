@@ -1,60 +1,51 @@
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { Text, View } from 'react-native';
-import { Button , Text as PText, Snackbar, TextInput } from 'react-native-paper';
+import { Button, Text as PText, Snackbar, TextInput } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCounter } from '../actions/AppActions';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 export default function App() {
 
+const navigation = useNavigation()
 
+let {count} = useSelector((state) => state.app)
 
+const dispatch = useDispatch()
 
-  const [username, setUserName] = useState('')
-  const [passwrod, setPassword] = useState('')
-  const [visible, setVisible] = useState(false)
   return (
     <View style={{
       flex: 1,
       backgroundColor: '#ecf0f1',
 
     }}>
-      <Text style={{ fontSize: 18 }}> This is a texting sentense </Text>
-      <PText style={{ fontSize: 18 }}> This is a texting sentense </PText>
 
       <Button mode='outlined'
         style={{ width: 150 }}
         onPress={() => {
-          alert('hello')
+          dispatch(updateCounter(count+1))
         }}
-      >Paper Press Me</Button>
+      >Add Number</Button>
+      <Text style={{ fontSize: 18 }}> Count: {count}</Text>
 
-
-      <TextInput
-        label="Email"
-        value={username}
-        onChangeText={text => setUserName(text)}
-      />
-      <TextInput
-        label="Password"
-        value={passwrod}
-        mode='outlined'
-        onChangeText={text => setPassword(text)}
-      />
-
-      <Button onPress={()=>{
-          setVisible(!visible)
-      }}>{visible ? 'Hide' : 'Show'}</Button>
-      <Snackbar
-      
-        visible={visible}
-        onDismiss={()=>{
-        
-          setVisible(false)
+      <Button mode='outlined'
+        style={{ width: 150 }}
+        onPress={() => {
+          dispatch(updateCounter(count-1))
         }}
-        duration={2*1000}
-       >
-       Network request failed!
-      </Snackbar>
+      >Minus Number</Button>
+
+<Button mode='outlined'
+        style={{ width: 150 }}
+        onPress={() => {
+          navigation.navigate('Details')
+        }}
+      >Next Screen</Button>
+
+
+
     </View>
   );
 }
