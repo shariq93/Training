@@ -1,13 +1,15 @@
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { View, Image, useWindowDimensions } from 'react-native';
 import { Button, Text, Snackbar, TextInput } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCounter } from '../actions/AppActions';
 import { useNavigation } from '@react-navigation/native';
 import { colors, mesures } from '../utils/Theme';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { loginUser } from '../apis/ApiClient';
+
 
 export default function LoginScreen() {
 
@@ -16,7 +18,7 @@ export default function LoginScreen() {
   const { width, height } = useWindowDimensions()
 
   const scheme = yup.object().shape({
-    stdId: yup.string().min(6,"Student id is too small").max(10).required("Student Id is required"),
+    stdId: yup.string().min(6, "Student id is too small").max(10).required("Student Id is required"),
     password: yup.string().min(8).max(12).required(),
   })
 
@@ -28,11 +30,37 @@ export default function LoginScreen() {
       password: '',
     },
     validationSchema: scheme,
-    onSubmit: (values)=>{
-      alert(JSON.stringify(values))
+    onSubmit: (values) => {
+      loginUser(values.stdId, values.password, (isSuccess, data) => {
+
+        if (isSuccess) {
+          AsyncStorage.setItem("@user", JSON.stringify(data.record))
+          AsyncStorage.setItem("@token", JSON.stringify(data.token))
+          AsyncStorage.setItem("@isLogin", '1')
+          alert('login Success')
+
+        } else {
+          alert(data.message)
+        }
+      })
     }
   })
-  console.log({ errors, values, touched });
+
+  useEffect(() => {
+    checkLogin()
+
+  })
+
+  const checkLogin =async  () => {
+    const isLogin = await AsyncStorage.getItem('@isLogin')
+    if(isLogin=='1'){
+      const user = await AsyncStorage.getItem('@user')
+      alert(user)
+    }
+
+
+  
+  }
   return (
 
     <View style={{
