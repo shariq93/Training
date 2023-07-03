@@ -6,14 +6,35 @@ import { updateCounter } from '../actions/AppActions';
 import { useNavigation } from '@react-navigation/native';
 import { colors, mesures } from '../utils/Theme';
 
-
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 export default function LoginScreen() {
 
   const navigation = useNavigation()
 
   const { width, height } = useWindowDimensions()
+
+  const scheme = yup.object().shape({
+    stdId: yup.string().min(6,"Student id is too small").max(10).required("Student Id is required"),
+    password: yup.string().min(8).max(12).required(),
+  })
+
+
+
+  const { handleChange, handleSubmit, setFieldValue, handleBlur, values, errors, touched, setFieldTouched } = useFormik({
+    initialValues: {
+      stdId: '',
+      password: '',
+    },
+    validationSchema: scheme,
+    onSubmit: (values)=>{
+      alert(JSON.stringify(values))
+    }
+  })
+  console.log({ errors, values, touched });
   return (
+
     <View style={{
       flex: 1,
       backgroundColor: '#ecf0f1',
@@ -41,35 +62,44 @@ export default function LoginScreen() {
           <TextInput mode='outlined'
             placeholder='Student Id'
             label={'Student Id'}
+            error={errors.stdId && touched.stdId}
+            onBlur={() => setFieldTouched('stdId', true)}
+            onChangeText={(text) => setFieldValue('stdId', text)}
             outlineColor={colors.dark}
           ></TextInput>
+          {(errors.stdId && touched.stdId) && <Text style={{ color: 'red', fontSize: 12 }}>{errors.stdId}</Text>}
 
           <TextInput
             style={{ marginTop: 10 }}
             secureTextEntry
             label={'Password'}
+            error={errors.password && touched.password}
+            onBlur={() => setFieldTouched('password', true)}
             outlineColor={colors.dark}
+            onChangeText={(text) => setFieldValue('password', text)}
             activeOutlineColor={colors.primary}
             placeholder='Password' mode='outlined'></TextInput>
-
+          {(errors.password && touched.password) && <Text style={{ color: 'red', fontSize: 12 }}>{errors.password}</Text>}
 
           <Button mode='contained'
+            onPress={handleSubmit}
             style={{ borderRadius: mesures.borderRadius, marginTop: 20 }}
             buttonColor={colors.primary}
           >Login</Button>
 
           <Button mode='text'
 
-          onPress={()=>{
-            navigation.navigate('Signup')
-          }}
+            onPress={() => {
+              navigation.navigate('Signup')
+            }}
             style={{ borderRadius: mesures.borderRadius, marginTop: 20 }}
-           textColor={colors.primary}
+            textColor={colors.primary}
           >Dont have an account?</Button>
         </View>
       </View>
 
     </View>
+
   );
 }
 
