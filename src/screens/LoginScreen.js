@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { loginUser } from '../apis/ApiClient';
+import { getUser } from '../storage/Storage';
 
 
 export default function LoginScreen() {
@@ -37,7 +38,7 @@ export default function LoginScreen() {
           AsyncStorage.setItem("@user", JSON.stringify(data.record))
           AsyncStorage.setItem("@token", JSON.stringify(data.token))
           AsyncStorage.setItem("@isLogin", '1')
-          alert('login Success')
+
 
         } else {
           alert(data.message)
@@ -54,8 +55,7 @@ export default function LoginScreen() {
   const checkLogin =async  () => {
     const isLogin = await AsyncStorage.getItem('@isLogin')
     if(isLogin=='1'){
-      const user = await AsyncStorage.getItem('@user')
-      alert(user)
+     navigation.navigate('Home')
     }
 
 
