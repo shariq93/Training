@@ -1,6 +1,6 @@
 import { getUser } from "../storage/Storage";
 
-const BASE_URL = 'http://199.188.203.162:8090/api/'
+export const BASE_URL = 'http://199.188.203.162:8090/api/'
 
 
 export const loginUser = (username, password, onSuccess) => {
@@ -29,7 +29,7 @@ export const loginUser = (username, password, onSuccess) => {
 
 
 
-export const createTextPost = async (text, onSuccess) => {
+export const createTextPost = async (text,image, onSuccess) => {
 
     const user = await getUser()
     var formdata = new FormData();
@@ -58,6 +58,43 @@ export const createTextPost = async (text, onSuccess) => {
         .catch(error => onSuccess(false, error));
 }
 
+export const createImagePost = async (text,image, onSuccess) => {
+
+    const user = await getUser()
+    var formdata = new FormData();
+    formdata.append("content", text);
+    formdata.append("user", user.id);
+    formdata.append("image", {
+        uri: image.uri,
+        name: new Date().getMilliseconds()+"_image.png",
+        type:'image/png',
+      })
+
+     
+
+
+
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+    };
+
+    fetch(BASE_URL + "collections/posts/records", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+         
+            if (result.message) {
+                onSuccess(false, result)
+            } else {
+                onSuccess(true, result)
+            }
+
+        })
+        .catch(error => onSuccess(false, error));
+}
+
 
 export const getAllPosts = async ( onSuccess) => {
 
@@ -75,8 +112,8 @@ export const getAllPosts = async ( onSuccess) => {
         .then(response => response.json())
         .then(result => {
            
-         
-              console.log(result);
+            console.log(result);
+             
 
                 onSuccess(true, result)
 
@@ -99,7 +136,7 @@ export const registerUser = (name, username, email, password, onSuccess) => {
         redirect: 'follow'
     };
     let url = BASE_URL + "collections/users/records"
-    console.log(url);
+
     fetch(BASE_URL + "collections/users/records", requestOptions)
         .then(response => response.json())
         .then(result => {
